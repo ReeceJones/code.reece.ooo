@@ -1,0 +1,13 @@
+{
+	"name": "code",
+	"authors": [
+		"Reece Jones"
+	],
+	"dependencies": {
+		"vibe-d": "~>0.8.4"
+	},
+	"description": "Online code editor, compiler, and runner.",
+	"copyright": "Copyright © 2018, Reece Jones",
+	"license": "proprietary",
+	"versions": ["VibeDefaultMain"]
+}
