@@ -4,7 +4,11 @@
 		"Reece Jones"
 	],
 	"dependencies": {
-		"vibe-d": "~>0.8.4"
+		"vibe-d": "~>0.8.4",
+		"vibe-d:tls": "*"
+	},
+	"subConfigurations": {
+		"vibe-d:tls": "openssl-1.1"
 	},
 	"description": "Online code editor, compiler, and runner.",
 	"copyright": "Copyright © 2018, Reece Jones",

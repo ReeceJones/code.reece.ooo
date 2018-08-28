@@ -12,7 +12,7 @@ shared static this()
     router.get("*", serveStaticFiles("public/"));
 
     auto settings = new HTTPServerSettings;
-    settings.port = 9001; // change to remove conflicts
+    settings.port = 9003; // change to remove conflicts
     settings.bindAddresses = ["::1", "0.0.0.0"];
     settings.sessionStore = new MemorySessionStore;
     listenHTTP(settings, router);
