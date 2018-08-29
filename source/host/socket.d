@@ -7,7 +7,7 @@ import std.stdio;
 import std.string;
 import host.io;
 
-string baseDirectory = "/etc/vibe/code.reece.ooo/public/userdata/";
+immutable string baseDirectory = "/etc/vibe/code.reece.ooo/public/userdata/";
 
 public void handleIOCommunication(scope WebSocket socket)
 {
@@ -21,7 +21,7 @@ public void handleIOCommunication(scope WebSocket socket)
         JSONValue response;
         if (operation == "filelist-update")
         {
-            string[] files = readDirectory();
+            string[] files = readDirectory(baseDirectory);
             response["elements"] = JSONValue(files.length);
             response["data"] = JSONValue(files);
             writeln("filelist-update json data:\n", response.toPrettyString());

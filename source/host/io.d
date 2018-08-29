@@ -20,5 +20,5 @@ public string readFile(string filePath)
 
 public string writeFile(string filePath, string fileData)
 {
-    std.file.write(filePath, fileData);
+    return std.file.write(filePath, fileData);
 }
