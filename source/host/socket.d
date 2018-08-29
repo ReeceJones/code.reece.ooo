@@ -19,6 +19,7 @@ public void handleIOCommunication(scope WebSocket socket)
         string operation = json["operation"].str.strip;
 
         JSONValue response;
+        response["operation"].str = operation;
         if (operation == "filelist-update")
         {
             string[] files = readDirectory(baseDirectory);
