@@ -5,7 +5,7 @@ function setText(text) {
 }
 
 function appendText(text) {
-    $("#output").append(text + "<br>");
+    $("#output").append("<br>" + text);
 }
 
 function getBaseURL() {

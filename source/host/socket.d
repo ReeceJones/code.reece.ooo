@@ -2,11 +2,10 @@ module host.socket;
 
 import vibe.http.websockets;
 import std.json;
-import std.file;
-import std.bitmanip;
 import vibe.http.websockets;
 import std.stdio;
 import std.string;
+import host.io;
 
 string baseDirectory = "/etc/vibe/code.reece.ooo/public/userdata/";
 
@@ -22,30 +21,18 @@ public void handleIOCommunication(scope WebSocket socket)
         JSONValue response;
         if (operation == "filelist-update")
         {
-            string[] files = updateFiles();
+            string[] files = readDirectory();
             response["elements"] = JSONValue(files.length);
             response["data"] = JSONValue(files);
             writeln("filelist-update json data:\n", response.toPrettyString());
         }
         else if (operation == "fileop-read")
         {
-            string fileData = readText(baseDirectory ~ json["file"].str);
+            string fileData = readFile(baseDirectory ~ json["file"].str);
             response["data"] = fileData;
             writeln("fileop-read json data:\n", response.toPrettyString);
         }
         socket.send(response.toString);
 
     } while(socket.connected);
-}
-
-private string[] updateFiles()
-{
-    auto files = dirEntries(baseDirectory, SpanMode.depth);
-    string[] list;
-    foreach(d; files)
-    {
-        writeln(d.isDir ? "dir" : "file",":\t\t", d.name);
-        list ~= (d.isDir ? "[dir]" : "[file]" ~ d.name);
-    }
-    return list;
 }
