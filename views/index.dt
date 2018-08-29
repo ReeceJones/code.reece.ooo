@@ -7,6 +7,6 @@ html(lang='en')
         title REECE
     body
         script(src='https://code.jquery.com/jquery-3.3.1.min.js', integrity='sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=', crossorigin='anonymous')
-        script(src='/communicate.js')
+        script(src='/scripts/communicate.js')
         div(id='output', style='width: 70%; height: 30%; bottom: 0; resizable: both')
             |="OUTPUT"
