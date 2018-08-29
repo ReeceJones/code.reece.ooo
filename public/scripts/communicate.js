@@ -21,6 +21,7 @@ function connect() {
         appendText("connected to server.");
         var jsonObj = new Object;
         jsonObj.operation = "filelist-update";
+        console.log(JSON.stringify(jsonObj));
         socket.send(JSON.stringify(jsonObj));
     }
     socket.onmessage = function(message) {

@@ -6,6 +6,7 @@ import std.file;
 import std.bitmanip;
 import vibe.http.websockets;
 import std.stdio;
+import std.string;
 
 string baseDirectory = "/etc/vibe/code.reece.ooo/public/userdata/";
 
@@ -16,7 +17,7 @@ public void handleIOCommunication(scope WebSocket socket)
     {
         auto io = socket.receiveText();
         auto json = io.parseJSON;
-        string operation = json["operation"].str;
+        string operation = json["operation"].str.strip;
 
         JSONValue response;
         if (operation == "filelist-update")
@@ -37,15 +38,14 @@ public void handleIOCommunication(scope WebSocket socket)
     } while(socket.connected);
 }
 
-string[] updateFiles()
+private string[] updateFiles()
 {
     auto files = dirEntries(baseDirectory, SpanMode.depth);
     string[] list;
     foreach(d; files)
     {
         writeln(d.isDir ? "dir" : "file",":\t\t", d.name);
-        if (d.isDir || d.isFile) // ignore symlinks
-            list ~= (d.isDir ? "[dir]" : "[file]" ~ d.name);
+        list ~= (d.isDir ? "[dir]" : "[file]" ~ d.name);
     }
     return list;
 }
