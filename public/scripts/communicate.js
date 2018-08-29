@@ -25,6 +25,7 @@ function connect() {
         socket.send(JSON.stringify(jsonObj));
     }
     socket.onmessage = function(message) {
+        console.log(message.data);
         appendText(message.data);
     }
     socket.onclose = function(event) {
