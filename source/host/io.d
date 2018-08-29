@@ -18,7 +18,7 @@ public string readFile(string filePath)
     return readText(filePath);
 }
 
-public string writeFile(string filePath, string fileData)
+public void writeFile(string filePath, string fileData)
 {
-    return std.file.write(filePath, fileData);
+    std.file.write(filePath, fileData);
 }
