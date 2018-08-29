@@ -1,11 +1,11 @@
 var socket; // websocket connection
 
 function setText(text) {
-    $("#content").html(text);
+    $("#output").html(text);
 }
 
 function appendText(text) {
-    $("#content").append(text + "<br>");
+    $("#output").append(text + "<br>");
 }
 
 function getBaseURL() {
