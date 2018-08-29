@@ -9,7 +9,7 @@ function appendText(text) {
 }
 
 function getBaseURL() {
-    var href = window.location.href.substring(8); // strip "https://"
+    var href = window.location.href.substring(7); // strip "http://"
     var idx = href.indexOf("/");
     return "wss://" + href.substring(0, idx);
 }
