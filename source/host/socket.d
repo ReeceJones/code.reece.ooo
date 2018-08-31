@@ -6,8 +6,7 @@ import vibe.http.websockets;
 import std.stdio;
 import std.string;
 import host.io;
-
-immutable string baseDirectory = "/etc/vibe/code.reece.ooo/public/userdata/";
+import defs;
 
 public void handleIOCommunication(scope WebSocket socket)
 {

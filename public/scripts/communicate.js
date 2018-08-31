@@ -16,13 +16,16 @@ function updateFileList() {
 }
 
 function addFile(path) {
-    $("#files").append("<br><div id=\"" + path + "\">" + path + "</div>");
+    let str = path.toString();
+    console.log(str);
+    $("#files").append("<div class=\"file\" id=\"" + path + "\"><div class=\"pad\">" + str + "</div></div>");
 }
 
 function connect() {
     console.log("connecting to server...");
     socket = new WebSocket(getBaseURL() + "/host");
     socket.onopen = function() {
+        $("#files").html("");
         console.log("connected to server.");
         updateFileList();
         // var jsonObj = new Object;
@@ -36,12 +39,11 @@ function connect() {
         {
             default: console.log("undefined operation: " + json.operation); break;
             case "filelist-update":
-                $("files").html("FILES:");
                 for (let i = 0; i < json.elements; i++)
                 {
                     // $("#files").append("<br>" + json.data[i]);
-                    console.log(json.data[i]);
-                    addFile(json.data[i]);
+                    console.log(json.data[0][i]);
+                    addFile(json.data[0][i]);
                 }
             break;
             case "fileop-read":
@@ -52,7 +54,8 @@ function connect() {
     }
     socket.onclose = function(event) {
         console.log("socket closed");
-        connect();
+        // $("#files").html("[error] socket closed");
+        // connect();
     }
 }
 
