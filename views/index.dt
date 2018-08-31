@@ -9,7 +9,13 @@ html(lang='en')
         script(src='https://code.jquery.com/jquery-3.3.1.min.js', integrity='sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=', crossorigin='anonymous')
         script(src='/scripts/ace/ace.js', type='text/javascript')
         script(src='/scripts/ace/ext-language_tools.js', type='text/javascript')
-        div(id='files', style='margin: 0; position: absolute; top: 3%; bottom: 0; left: 0; right: 0; width: 8%; background-color: #222222')
+        :style
+            #files {
+                font-size: 12px;
+                color: white;
+            }
+        div(id='files', style='margin: 0; position: absolute; top: 3%; bottom: 0; left: 0; right: 0; width: 8%; background-color: #222222; word-wrap: break-word;')
         div(id='context-menu', style='margin: 0; position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: auto; height: 3%; background-color: #222222')
         div(id='editor', style='margin: 0; position: absolute; top: 3%; bottom: 0; left: 8%; right: 0; width: auto')
         script(src='/scripts/communicate.js', type='text/javascript')
+        script(src='/scripts/app.js', type='text/javascript')

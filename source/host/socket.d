@@ -17,20 +17,24 @@ public void handleIOCommunication(scope WebSocket socket)
         auto io = socket.receiveText();
         auto json = io.parseJSON;
         string operation = json["operation"].str.strip;
+        writeln("operation:", operation);
 
         JSONValue response;
-        response["operation"].str = operation;
+        response["operation"] = JSONValue(operation);
         if (operation == "filelist-update")
         {
             string[] files = readDirectory(baseDirectory);
             response["elements"] = JSONValue(files.length);
-            response["data"] = JSONValue(files);
+            response["data"] = JSONValue([files]);
+
             writeln("filelist-update json data:\n", response.toPrettyString());
         }
         else if (operation == "fileop-read")
         {
             string fileData = readFile(baseDirectory ~ json["file"].str);
-            response["data"] = fileData;
+            try {
+                response["data"] = JSONValue(fileData);
+            } catch(JSONException ex) {writeln("file read failed");}
             writeln("fileop-read json data:\n", response.toPrettyString);
         }
         socket.send(response.toString);

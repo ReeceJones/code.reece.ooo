@@ -1,13 +1,5 @@
 var socket; // websocket connection
 
-function setText(text) {
-    $("#output").html(text);
-}
-
-function appendText(text) {
-    $("#output").append("<br>" + text);
-}
-
 function getBaseURL() {
     var href = window.location.href.substring(7); // strip "http://"
     var idx = href.indexOf("/");
@@ -15,17 +7,24 @@ function getBaseURL() {
 }
 
 function updateFileList() {
-    var jsonObject = new Object;
-    jsonObject.operation = "filelist-update";
-    console.log(JSON.stringify(jsonObject));
-    socket.send(JSON.stringify(jsonObject));
+    let j = new Object();
+    j.operation = "filelist-update";
+    console.log(j);
+    let str = JSON.stringify(j);
+    console.log(str);
+    socket.send(str);
+}
+
+function addFile(path) {
+    $("#files").append("<br><div id=\"" + path + "\">" + path + "</div>");
 }
 
 function connect() {
-    setText("connecting to server...");
+    console.log("connecting to server...");
     socket = new WebSocket(getBaseURL() + "/host");
     socket.onopen = function() {
-        appendText("connected to server.");
+        console.log("connected to server.");
+        updateFileList();
         // var jsonObj = new Object;
         // jsonObj.operation = "filelist-update";
         // console.log(JSON.stringify(jsonObj));
@@ -35,12 +34,14 @@ function connect() {
         let json = JSON.parse(message.data);
         switch (json.operation)
         {
-            default: console.log("undefined operation"); break;
+            default: console.log("undefined operation: " + json.operation); break;
             case "filelist-update":
                 $("files").html("FILES:");
                 for (let i = 0; i < json.elements; i++)
                 {
-                    $("#files").append("<br>" + json.data[i]);
+                    // $("#files").append("<br>" + json.data[i]);
+                    console.log(json.data[i]);
+                    addFile(json.data[i]);
                 }
             break;
             case "fileop-read":
@@ -50,7 +51,7 @@ function connect() {
         }
     }
     socket.onclose = function(event) {
-        appendText("socket closed");
+        console.log("socket closed");
         connect();
     }
 }
@@ -77,5 +78,3 @@ editor.setOptions({
     showInvisibles: true,
     highlightActiveLine: true
 });
-
-connect();
