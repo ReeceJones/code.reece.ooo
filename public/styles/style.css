@@ -8,10 +8,12 @@
     background-color: #222222;
     padding-bottom: 0;
     padding-top: 0;
+    user-select: none;
 }
 .file:hover {
     background-color: #333333;
     cursor: grab;
+    user-select: none;
 }
 .pad {
     position: relative;

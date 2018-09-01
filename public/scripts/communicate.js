@@ -15,49 +15,32 @@ function updateFileList() {
     socket.send(str);
 }
 
+function occurances(str, match) {
+    let occ = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] == match)
+            occ++;
+    }
+    return occ;
+}
+
 function addFile(path) {
     let str = path.toString();
     console.log(str);
-    $("#files").append("<div class=\"file\" id=\"" + path + "\"><div class=\"pad\">" + str + "</div></div>");
+    // $("#files").append("<div class=\"file\" id=\"" + path + "\"><div class=\"pad\">" + str + "</div></div>");
+    let depth = occurances(str, '/');
+    console.log(depth);
+    let html = "<div class=\"file\" id=\"" + path + "\">";
+    let close = "</div>";
+    for (let i = 0; i < depth + 1; i++)
+    {
+        html += "<div class=\"pad\" id=\"" + path +  "\">";
+        close += "</div>";
+    }
+    html += str + close;
+    $("#files").append(html);
 }
 
-function connect() {
-    console.log("connecting to server...");
-    socket = new WebSocket(getBaseURL() + "/host");
-    socket.onopen = function() {
-        $("#files").html("");
-        console.log("connected to server.");
-        updateFileList();
-        // var jsonObj = new Object;
-        // jsonObj.operation = "filelist-update";
-        // console.log(JSON.stringify(jsonObj));
-        // socket.send(JSON.stringify(jsonObj));
-    }
-    socket.onmessage = function(message) {
-        let json = JSON.parse(message.data);
-        switch (json.operation)
-        {
-            default: console.log("undefined operation: " + json.operation); break;
-            case "filelist-update":
-                for (let i = 0; i < json.elements; i++)
-                {
-                    // $("#files").append("<br>" + json.data[i]);
-                    console.log(json.data[0][i]);
-                    addFile(json.data[0][i]);
-                }
-            break;
-            case "fileop-read":
-                //TODO: ace.js document.setValue(json.data);
-                editor.setValue(json.data);
-            break;
-        }
-    }
-    socket.onclose = function(event) {
-        console.log("socket closed");
-        // $("#files").html("[error] socket closed");
-        // connect();
-    }
-}
 
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/ambiance");
@@ -81,3 +64,61 @@ editor.setOptions({
     showInvisibles: true,
     highlightActiveLine: true
 });
+
+function readFile(file) {
+    socket = new WebSocket(getBaseURL + "/host");
+    socket.onopen = function() {
+        socket.send(file);
+    }
+}
+
+$(function() {
+    $("#files").click(function(e) {
+        console.log(e.target.id);
+        let j = new Object();
+        j.operation = "fileop-read";
+        j.file = e.target.id.toString();
+        console.log(j);
+        let str = JSON.stringify(j);
+        socket.send(str);
+    });
+});
+
+
+console.log("connecting to server...");
+socket = new WebSocket(getBaseURL() + "/host");
+socket.onopen = function() {
+    $("#files").html("");
+    console.log("connected to server.");
+    updateFileList();
+    // var jsonObj = new Object;
+    // jsonObj.operation = "filelist-update";
+    // console.log(JSON.stringify(jsonObj));
+    // socket.send(JSON.stringify(jsonObj));
+}
+socket.onmessage = function(message) {
+    let json = JSON.parse(message.data);
+    switch (json.operation)
+    {
+        default: console.log("undefined operation: " + json.operation); break;
+        case "filelist-update":
+            let sorted = json.data[0].sort();
+            for (let i = 0; i < json.elements; i++)
+            {
+                // $("#files").append("<br>" + json.data[i]);
+                console.log(json.data[0][i]);
+                addFile(json.data[0][i]);
+            }
+        break;
+        case "fileop-read":
+            //TODO: ace.js document.setValue(json.data);
+            console.log(json.data);
+            editor.setValue(json.data);
+        break;
+    }
+}
+socket.onclose = function(event) {
+    console.log("socket closed: " + event.code);
+    // $("#files").html("[error] socket closed");
+    // connect();
+}
