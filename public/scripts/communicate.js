@@ -52,10 +52,14 @@ $(function() {
             if (location[location.length-1] == "/") { // its a directory
                 console.log(location + " is a directory...collapsing");
                 let value = $("#" + e.target.id.toString()).children("div :not(#" + e.target.id.toString() + ")").css("display");
-                if (value == "none")
+                if (value == "none") {
                     $("#" + e.target.id.toString()).children("div :not(#" + e.target.id.toString() + ")").css("display", "inline");
-                else
+                    $("b#" + e.target.id.toString()).html("- " + $("b#" + e.target.id.toString()).html().toString().substring(1));
+                }
+                else {
                     $("#" + e.target.id.toString()).children("div :not(#" + e.target.id.toString() + ")").css("display", "none");
+                    $("b#" + e.target.id.toString()).html("+ " + $("b#" + e.target.id.toString()).html().toString().substring(1));
+                }
             }
             else { // its a file
                 console.log(e.target.id);
@@ -126,7 +130,7 @@ socket.onmessage = function(message) {
                     if (!$("#-files-" + divDirectory).length) {
                         $("#-files-" + prev).append("<div class=\"pad\" id=\"-files-" + divDirectory + 
                         "\"><div id=\"-files-" + divDirectory + "\"><b id=\"-files-" + divDirectory + 
-                        "\">" + tok[j] + "</b></div>");
+                        "\" class=\"folder\">- " + tok[j] + "</b></div>");
                     }
                     prev = divDirectory;
                 }

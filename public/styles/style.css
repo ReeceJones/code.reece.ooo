@@ -9,7 +9,7 @@
     left: 0;
     right: 0;
     width: 8%;
-    background-color: #222222;
+    background-color: #111111;
     word-wrap: break-word;
 }
 #context-menu {
@@ -21,7 +21,7 @@
     right: 0;
     width: auto;
     height: 3%;
-    background-color: #222222;
+    background-color: #111111;
 }
 #editor {
     margin: 0;
@@ -34,7 +34,7 @@
 }
 .file {
     color: white;
-    background-color: #222222;
+    background-color: #111111;
     padding-bottom: 0;
     padding-top: 0;
     user-select: none;
@@ -47,4 +47,8 @@
 .pad {
     position: relative;
     left: 10px;
+}
+.folder:hover {
+    cursor: grab;
+    background-color: #333333;
 }
