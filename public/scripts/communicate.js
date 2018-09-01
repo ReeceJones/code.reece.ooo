@@ -9,36 +9,31 @@ function getBaseURL() {
 function updateFileList() {
     let j = new Object();
     j.operation = "filelist-update";
-    console.log(j);
     let str = JSON.stringify(j);
-    console.log(str);
     socket.send(str);
-}
-
-function occurances(str, match) {
-    let occ = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] == match)
-            occ++;
-    }
-    return occ;
 }
 
 function addFile(path) {
     let str = path.toString();
-    console.log(str);
     // $("#files").append("<div class=\"file\" id=\"" + path + "\"><div class=\"pad\">" + str + "</div></div>");
-    let depth = occurances(str, '/');
-    console.log(depth);
-    let html = "<div class=\"file\" id=\"" + path + "\">";
-    let close = "</div>";
-    for (let i = 0; i < depth + 1; i++)
-    {
-        html += "<div class=\"pad\" id=\"" + path +  "\">";
-        close += "</div>";
-    }
-    html += str + close;
-    $("#files").append(html);
+    // the folders will be [0..$-1]
+    let tok = str.split("/");
+    let depth = tok.length;
+    // make sure that the folder(s) we display to in the list exist
+    let id = path.replace(new RegExp("/", "g"), "-");
+    console.log(id.substring(0, id.lastIndexOf("-")));
+    $("#files-" + id.substring(0, id.lastIndexOf("-")+1)).append("<div class=\"file\" id=\"" + id + "\">" + "<div class=\"pad\" id=\"" + tok[tok.length - 1]  + "\">" + tok[tok.length - 1] + "</div></div>");
+
+
+    // let html = "<div class=\"file\" id=\"" + path + "\">";
+    // let close = "</div>";
+    // for (let i = 0; i < depth + 1; i++)
+    // {
+    //     html += "<div class=\"pad\" id=\"" + path +  "\">";
+    //     close += "</div>";
+    // }
+    // html += str + close;
+    // $("#files").append(html);
 }
 
 
@@ -73,12 +68,12 @@ function readFile(file) {
 }
 
 $(function() {
-    $("#files").click(function(e) {
+    $("#files-").click(function(e) {
         console.log(e.target.id);
         let j = new Object();
         j.operation = "fileop-read";
         j.file = e.target.id.toString();
-        console.log(j);
+        console.log("clicked: " + j);
         let str = JSON.stringify(j);
         socket.send(str);
     });
@@ -88,7 +83,7 @@ $(function() {
 console.log("connecting to server...");
 socket = new WebSocket(getBaseURL() + "/host");
 socket.onopen = function() {
-    $("#files").html("");
+    $("#files-").html("");
     console.log("connected to server.");
     updateFileList();
     // var jsonObj = new Object;
@@ -106,13 +101,24 @@ socket.onmessage = function(message) {
             for (let i = 0; i < json.elements; i++)
             {
                 // $("#files").append("<br>" + json.data[i]);
-                console.log(json.data[0][i]);
+
+                // before adding the file, we need  to make sure that the file directory structure exists in the editor
+                let tok = json.data[0][i].split("/");
+                let divDirectory = "";
+                let prev = divDirectory;
+                for (let j = 0; j < tok.length - 1; j++) {
+                    divDirectory += tok[j] + "-";
+                    if (!$("#files-" + divDirectory).length) {
+                        $("#files-" + prev).append("<div id=\"files-" + divDirectory + "\">" + tok[j] + "</div>");
+                    }
+                    prev = divDirectory;
+                }
+
                 addFile(json.data[0][i]);
             }
         break;
         case "fileop-read":
             //TODO: ace.js document.setValue(json.data);
-            console.log(json.data);
             editor.setValue(json.data);
         break;
     }
