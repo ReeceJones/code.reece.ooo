@@ -7,7 +7,7 @@ function getBaseURL() {
 }
 
 function updateFileList() {
-    $("#files-").html("");
+    $("#-files-").html("");
     let j = new Object();
     j.operation = "filelist-update";
     let str = JSON.stringify(j);
@@ -23,7 +23,7 @@ function addFile(path) {
     // make sure that the folder(s) we display to in the list exist
     let id = path.replace(new RegExp("/", "g"), "-");
     console.log(id.substring(0, id.lastIndexOf("-")));
-    $("#files-" + id.substring(0, id.lastIndexOf("-")+1)).append("<div class=\"file\" id=\"" + id + "\">" + "<div class=\"pad\" id=\"" + id + "\">" + tok[tok.length - 1] + "</div></div>");
+    $("#-files-" + id.substring(0, id.lastIndexOf("-")+1)).append("<div class=\"file\" id=\"" + id + "\">" + "<div class=\"pad\" id=\"" + id + "\">" + tok[tok.length - 1] + "</div></div>");
 
 
     // let html = "<div class=\"file\" id=\"" + path + "\">";
@@ -45,9 +45,9 @@ function readFile(file) {
 }
 
 $(function() {
-    $("#files-").click(function(e) {
+    $("#-files-").click(function(e) {
         // ignore accidental clicks on the background
-        if (e.target.id.toString() != "files-") {
+        if (e.target.id.toString() != "-files-") {
             let location = e.target.id.toString().replace(new RegExp("-", "g"), "/");
             if (location[location.length-1] == "/") { // its a directory
                 console.log(location + " is a directory...collapsing");
@@ -112,7 +112,7 @@ socket.onmessage = function(message) {
     {
         default: console.log("undefined operation: " + json.operation); break;
         case "filelist-update":
-            let sorted = json.data[0].sort();
+            let directories = [];
             for (let i = 0; i < json.elements; i++)
             {
                 // $("#files").append("<br>" + json.data[i]);
@@ -123,15 +123,19 @@ socket.onmessage = function(message) {
                 let prev = divDirectory;
                 for (let j = 0; j < tok.length - 1; j++) {
                     divDirectory += tok[j] + "-";
-                    if (!$("#files-" + divDirectory).length) {
-                        $("#files-" + prev).append("<div class=\"pad\" id=\"files-" + divDirectory + 
-                        "\"><div id=\"files-" + divDirectory + "\"><b id=\"files-" + divDirectory + 
+                    if (!$("#-files-" + divDirectory).length) {
+                        $("#-files-" + prev).append("<div class=\"pad\" id=\"-files-" + divDirectory + 
+                        "\"><div id=\"-files-" + divDirectory + "\"><b id=\"-files-" + divDirectory + 
                         "\">" + tok[j] + "</b></div>");
                     }
                     prev = divDirectory;
                 }
-
+                directories.push(divDirectory);
+                // tinysort('div#-files-' + divDirectory + '>div',{attr:'id'});
                 addFile(json.data[0][i]);
+            }
+            for (let i = 0; i < directories.length; i++) {
+                tinysort('div#-files-' + directories[i] + '>div', {attr: 'id'});
             }
         break;
         case "fileop-read":
