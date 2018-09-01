@@ -7,6 +7,7 @@ function getBaseURL() {
 }
 
 function updateFileList() {
+    $("#files-").html("");
     let j = new Object();
     j.operation = "filelist-update";
     let str = JSON.stringify(j);
@@ -22,7 +23,7 @@ function addFile(path) {
     // make sure that the folder(s) we display to in the list exist
     let id = path.replace(new RegExp("/", "g"), "-");
     console.log(id.substring(0, id.lastIndexOf("-")));
-    $("#files-" + id.substring(0, id.lastIndexOf("-")+1)).append("<div class=\"file\" id=\"" + id + "\">" + "<div class=\"pad\" id=\"" + tok[tok.length - 1]  + "\">" + tok[tok.length - 1] + "</div></div>");
+    $("#files-" + id.substring(0, id.lastIndexOf("-")+1)).append("<div class=\"file\" id=\"" + id + "\">" + "<div class=\"pad\" id=\"" + id + "\">" + tok[tok.length - 1] + "</div></div>");
 
 
     // let html = "<div class=\"file\" id=\"" + path + "\">";
@@ -36,6 +37,33 @@ function addFile(path) {
     // $("#files").append(html);
 }
 
+function readFile(file) {
+    socket = new WebSocket(getBaseURL + "/host");
+    socket.onopen = function() {
+        socket.send(file);
+    }
+}
+
+$(function() {
+    $("#files-").click(function(e) {
+        // ignore accidental clicks on the background
+        if (e.target.id.toString() != "files-") {
+            let location = e.target.id.toString().replace(new RegExp("-", "g"), "/");
+            if (location[location.length-1] == "/") { // its a directory
+                console.log(location + " is a directory...collapsing");
+            }
+            else { // its a file
+                console.log(e.target.id);
+                let j = new Object();
+                j.operation = "fileop-read";
+                j.file = location;
+                console.log("clicked: " + j);
+                let str = JSON.stringify(j);
+                socket.send(str);
+            }
+        }
+    });
+});
 
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/ambiance");
@@ -60,26 +88,7 @@ editor.setOptions({
     highlightActiveLine: true
 });
 
-function readFile(file) {
-    socket = new WebSocket(getBaseURL + "/host");
-    socket.onopen = function() {
-        socket.send(file);
-    }
-}
-
-$(function() {
-    $("#files-").click(function(e) {
-        console.log(e.target.id);
-        let j = new Object();
-        j.operation = "fileop-read";
-        j.file = e.target.id.toString();
-        console.log("clicked: " + j);
-        let str = JSON.stringify(j);
-        socket.send(str);
-    });
-});
-
-
+// script loadtime
 console.log("connecting to server...");
 socket = new WebSocket(getBaseURL() + "/host");
 socket.onopen = function() {
@@ -109,7 +118,8 @@ socket.onmessage = function(message) {
                 for (let j = 0; j < tok.length - 1; j++) {
                     divDirectory += tok[j] + "-";
                     if (!$("#files-" + divDirectory).length) {
-                        $("#files-" + prev).append("<div id=\"files-" + divDirectory + "\">" + tok[j] + "</div>");
+                        $("#files-" + prev).append("<div class=\"pad\" id=\"files-" + divDirectory + 
+                                            "\"><div id=\"files-" + divDirectory + "\">" + tok[j] + "</div></div>");
                     }
                     prev = divDirectory;
                 }
@@ -125,6 +135,8 @@ socket.onmessage = function(message) {
 }
 socket.onclose = function(event) {
     console.log("socket closed: " + event.code);
+    // reconnect if we accidentally get disconnected
+    socket = new WebSocket(getBaseURL() + "/host");
     // $("#files").html("[error] socket closed");
     // connect();
 }
