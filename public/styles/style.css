@@ -2,6 +2,35 @@
     font-size: 0.85em;
     color: white;
     font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    position: absolute;
+    top: 3%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 8%;
+    background-color: #222222;
+    word-wrap: break-word;
+}
+#context-menu {
+    margin: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 3%;
+    background-color: #222222;
+}
+#editor {
+    margin: 0;
+    position: absolute;
+    top: 3%; 
+    bottom: 0; 
+    left: 8%; 
+    right: 0; 
+    width: auto
 }
 .file {
     color: white;

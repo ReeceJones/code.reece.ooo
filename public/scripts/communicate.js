@@ -51,6 +51,11 @@ $(function() {
             let location = e.target.id.toString().replace(new RegExp("-", "g"), "/");
             if (location[location.length-1] == "/") { // its a directory
                 console.log(location + " is a directory...collapsing");
+                let value = $("#" + e.target.id.toString()).children("div :not(#" + e.target.id.toString() + ")").css("display");
+                if (value == "none")
+                    $("#" + e.target.id.toString()).children("div :not(#" + e.target.id.toString() + ")").css("display", "inline");
+                else
+                    $("#" + e.target.id.toString()).children("div :not(#" + e.target.id.toString() + ")").css("display", "none");
             }
             else { // its a file
                 console.log(e.target.id);
@@ -65,6 +70,7 @@ $(function() {
     });
 });
 
+// create the editor
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/ambiance");
 editor.session.setMode("ace/mode/c_cpp");
