@@ -13,5 +13,17 @@ html(lang='en')
         link(href='/styles/style.css', type='text/css', rel='stylesheet')
         div(id='-files-')
         div(id='context-menu')
+            div(id='context-file', class='context-item')
+                |="File"
+            div(id='context-edit', class='context-item')
+                |="Edit"
+            div(id='context-search', class='context-item')
+                |="Search"
+            div(id='context-view', class='context-item')
+                |="View"
+            div(id='context-settings', class='context-item')
+                |="Settings"
+            div(id='context-run', class='context-item')
+                |="Run"
         div(id='editor')
         script(src='/scripts/communicate.js', type='text/javascript')

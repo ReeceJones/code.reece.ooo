@@ -7,7 +7,7 @@ function getBaseURL() {
 }
 
 function updateFileList() {
-    $("#-files-").html("");
+    $("#-files-").html("<br>");
     let j = new Object();
     j.operation = "filelist-update";
     let str = JSON.stringify(j);
@@ -23,7 +23,7 @@ function addFile(path) {
     // make sure that the folder(s) we display to in the list exist
     let id = path.replace(new RegExp("/", "g"), "-");
     console.log(id.substring(0, id.lastIndexOf("-")));
-    $("#-files-" + id.substring(0, id.lastIndexOf("-")+1)).append("<div class=\"file\" id=\"" + id + "\">" + "<div class=\"pad\" id=\"" + id + "\">" + tok[tok.length - 1] + "</div></div>");
+    $("#-files-" + id.substring(0, id.lastIndexOf("-")+1)).append("<div class=\"file\" id=\"" + id + "\">" + "<div class=\"pad file\" id=\"" + id + "\">" + tok[tok.length - 1] + "</div></div>");
 
 
     // let html = "<div class=\"file\" id=\"" + path + "\">";
@@ -98,60 +98,67 @@ editor.setOptions({
     highlightActiveLine: true
 });
 
-// script loadtime
-console.log("connecting to server...");
-socket = new WebSocket(getBaseURL() + "/host");
-socket.onopen = function() {
-    $("#files-").html("");
-    console.log("connected to server.");
-    updateFileList();
-    // var jsonObj = new Object;
-    // jsonObj.operation = "filelist-update";
-    // console.log(JSON.stringify(jsonObj));
-    // socket.send(JSON.stringify(jsonObj));
-}
-socket.onmessage = function(message) {
-    let json = JSON.parse(message.data);
-    switch (json.operation)
-    {
-        default: console.log("undefined operation: " + json.operation); break;
-        case "filelist-update":
-            let directories = [];
-            for (let i = 0; i < json.elements; i++)
-            {
-                // $("#files").append("<br>" + json.data[i]);
+function connect() {
+    // script loadtime
+    console.log("connecting to server...");
+    socket = new WebSocket(getBaseURL() + "/host");
+    socket.onopen = function() {
+        $("#files-").html("");
+        console.log("connected to server.");
+        updateFileList();
+        // var jsonObj = new Object;
+        // jsonObj.operation = "filelist-update";
+        // console.log(JSON.stringify(jsonObj));
+        // socket.send(JSON.stringify(jsonObj));
+    }
+    socket.onmessage = function(message) {
+        let json = JSON.parse(message.data);
+        switch (json.operation)
+        {
+            default: console.log("undefined operation: " + json.operation); break;
+            case "filelist-update":
+                console.log(json.data[0]);
+                let directories = [];
+                for (let i = 0; i < json.elements; i++)
+                {
+                    // $("#files").append("<br>" + json.data[i]);
 
-                // before adding the file, we need  to make sure that the file directory structure exists in the editor
-                let tok = json.data[0][i].split("/");
-                let divDirectory = "";
-                let prev = divDirectory;
-                for (let j = 0; j < tok.length - 1; j++) {
-                    divDirectory += tok[j] + "-";
-                    if (!$("#-files-" + divDirectory).length) {
-                        $("#-files-" + prev).append("<div class=\"pad\" id=\"-files-" + divDirectory + 
-                        "\"><div id=\"-files-" + divDirectory + "\"><b id=\"-files-" + divDirectory + 
-                        "\" class=\"folder\">- " + tok[j] + "</b></div>");
+                    // before adding the file, we need  to make sure that the file directory structure exists in the editor
+                    let tok = json.data[0][i].split("/");
+                    console.log(tok);
+                    let divDirectory = "";
+                    let prev = divDirectory;
+                    for (let j = 0; j < tok.length - 1; j++) {
+                        divDirectory += tok[j] + "-";
+                        if (!$("#-files-" + divDirectory).length) {
+                            $("#-files-" + prev).append("<div class=\"pad\" id=\"-files-" + divDirectory + 
+                            "\"><div id=\"-files-" + divDirectory + "\"><b id=\"-files-" + divDirectory + 
+                            "\" class=\"folder\">- " + tok[j] + "</b></div>");
+                        }
+                        prev = divDirectory;
                     }
-                    prev = divDirectory;
+                    directories.push(divDirectory);
+                    // tinysort('div#-files-' + divDirectory + '>div',{attr:'id'});
+                    addFile(json.data[0][i]);
                 }
-                directories.push(divDirectory);
-                // tinysort('div#-files-' + divDirectory + '>div',{attr:'id'});
-                addFile(json.data[0][i]);
-            }
-            for (let i = 0; i < directories.length; i++) {
-                tinysort('div#-files-' + directories[i] + '>div', {attr: 'id'});
-            }
-        break;
-        case "fileop-read":
-            //TODO: ace.js document.setValue(json.data);
-            editor.setValue(json.data);
-        break;
+                console.log(directories);
+                for (let i = 0; i < directories.length; i++) {
+                    tinysort('div#-files-' + directories[i] + '>div', {attr: 'id'});
+                }
+            break;
+            case "fileop-read":
+                //TODO: ace.js document.setValue(json.data);
+                editor.setValue(json.data);
+            break;
+        }
+    }
+    socket.onclose = function(event) {
+        console.log("socket closed: " + event.code);
+        // reconnect if we accidentally get disconnected
+        connect();
+        // $("#files").html("[error] socket closed");
+        // connect();
     }
 }
-socket.onclose = function(event) {
-    console.log("socket closed: " + event.code);
-    // reconnect if we accidentally get disconnected
-    socket = new WebSocket(getBaseURL() + "/host");
-    // $("#files").html("[error] socket closed");
-    // connect();
-}
+
+connect();
