@@ -57,7 +57,7 @@ $(function() {
                 let j = new Object();
                 j.operation = "fileop-read";
                 j.file = location;
-                console.log("clicked: " + j);
+                console.log("clicked: " + e.target.id.toString());
                 let str = JSON.stringify(j);
                 socket.send(str);
             }
@@ -119,7 +119,8 @@ socket.onmessage = function(message) {
                     divDirectory += tok[j] + "-";
                     if (!$("#files-" + divDirectory).length) {
                         $("#files-" + prev).append("<div class=\"pad\" id=\"files-" + divDirectory + 
-                                            "\"><div id=\"files-" + divDirectory + "\">" + tok[j] + "</div></div>");
+                        "\"><div id=\"files-" + divDirectory + "\"><b id=\"files-" + divDirectory + 
+                        "\">" + tok[j] + "</b></div>");
                     }
                     prev = divDirectory;
                 }
