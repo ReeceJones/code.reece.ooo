@@ -172,12 +172,25 @@ class HashMemory {
     type(hash) {
         for (let i = 0; i < this.data.folders.length; i++) {
             if (this.data.folders[i].hash == hash) {
-                return "folder"
+                return "folder";
             }
         }
         for (let i = 0; i < this.data.files.length; i++) {
             if (this.data.files[i].hash == hash) {
                 return "file";
+            }
+        }
+        return "unknown";
+    }
+    toPath(hash) {
+        for (let i = 0; i < this.data.folders.length; i++) {
+            if (this.data.folders[i].hash == hash) {
+                return this.data.folders[i].path;
+            }
+        }
+        for (let i = 0; i < this.data.files.length; i++) {
+            if (this.data.files[i].hash == hash) {
+                return this.data.files[i].path;
             }
         }
         return "unknown";
@@ -234,6 +247,9 @@ function serverRequest(fn) {
                         );
                     }
                 }
+            break;
+            case "fileop-read":
+                editor.setValue(json.data);
             break;
         }
         websocket.close();
@@ -293,6 +309,15 @@ $(function() {
                     $("#" + e.target.id.toString()).children("div :not(#" + e.target.id.toString() + ")").css("display", "none");
                     $("b[id='" + e.target.id.toString() + "']").html("+ " + $("b[id='" + e.target.id.toString() + "']").html().toString().substring(1));
                 }
+            break;
+            case "file":
+                serverRequest(function() {
+                    let j = new Object();
+                    j.operation = "fileop-read";
+                    j.file = hashMemory.toPath(e.target.id);
+                    let str = JSON.stringify(j);
+                    websocket.send(str);
+                });
             break;
         }
     });
