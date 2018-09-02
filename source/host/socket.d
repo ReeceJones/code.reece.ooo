@@ -22,9 +22,8 @@ public void handleIOCommunication(scope WebSocket socket)
         response["operation"] = JSONValue(operation);
         if (operation == "filelist-update")
         {
-            string[] files = readDirectory(baseDirectory);
-            response["elements"] = JSONValue(files.length);
-            response["data"] = JSONValue([files]);
+            string data = readDirectory(baseDirectory);
+            response["data"] = JSONValue(data);
 
             writeln("filelist-update json data:\n", response.toPrettyString());
         }
