@@ -92,7 +92,7 @@ function serverRequest(fn) {
     }
 }
 
-
+$("#context-menu").menu();
 
 // create editor on page load
 var editor = ace.edit("editor");
@@ -152,27 +152,7 @@ $(function() {
                     websocket.send(str);
                 });
             break;
-        }
-    });
-    $("#context-menu").click(function(e) {
-        console.log("clicked: " + e.target.id);
-        if (e.target.id != "context-menu") {
-            let disp = $("#drop-down").css("display");
-            let tpos = $("#" + e.target.id).position();
-            let dpos = $("#drop-down").position();
-            console.log(disp);
-            if (disp != "none" && tpos.left == dpos.left) {
-                $("#drop-down").css("display", "none");
             }
-            else {
-                $("#drop-down").css("display", "inline");
-                $("#drop-down").css("width", "auto");
-                $("#drop-down").css("height", "auto");
-                $("#drop-down").css("left", tpos.left.toString() + "px");
-                $("#drop-down").css("top", "25px");
-                $("#drop-down").css("z-index", "1000");
-                $("#drop-down").css("background-color", "#333333");
-            }
-        }
     });
+    
 });

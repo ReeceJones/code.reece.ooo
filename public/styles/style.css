@@ -1,3 +1,7 @@
+body {
+    background-color: #555555;
+}
+
 #file-container {
     font-size: 0.85em;
     color: white;
@@ -11,17 +15,6 @@
     width: 8%;
     background-color: #111111;
     word-wrap: break-word;
-}
-#context-menu {
-    margin: 0;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: auto;
-    height: 25px;
-    background-color: #222222;
 }
 #editor {
     margin: 0;
@@ -52,23 +45,34 @@
     cursor: pointer;
     background-color: #333333;
 }
-.context-item {
-    width: 70px;
+#context-menu {
     margin: 0 0 0 0;
-    padding-top: 5px;
-    height: 20px;
-    font-family: 'Courier New', Courier, monospace;
-    color: white;
-    text-align: center;
-    font-size: 0.85em;
+    padding: 0 0 0 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 25px;
+    width: auto;
+    background-color: #555555;
+}
+.ui-menu:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+    width: auto;
+}
+.ui-menu .ui-menu-item {
     display: inline-block;
-    padding-left: 0;
-    padding-right: 0;
+    float: left;
+    margin: 0;
+    padding: 0;
+    padding-left: 10px;
+    width: auto;
+    height: 25px;
 }
-.context-item:hover {
-    background-color: #333333;
-    cursor: default;
-}
-#context-items:hover {
-    cursor: default;
+ul .ui-front {
+    background-color: black;
 }
