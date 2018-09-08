@@ -1,5 +1,5 @@
 body {
-    background-color: #555555;
+    background-color: #333333;
 }
 
 #file-container {
@@ -49,30 +49,61 @@ body {
     margin: 0 0 0 0;
     padding: 0 0 0 0;
     position: absolute;
-    left: 0;
+    left: 15px;
     top: 0;
     height: 25px;
     width: auto;
-    background-color: #555555;
+    background-color: #333333;
+    
+    text-decoration:none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    color:#f0f0f0;
+    white-space:nowrap
 }
-.ui-menu:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
-    height: 0;
+#context-menu li {
+    float:left;
+    list-style:none;
+    padding-left: 3px;
+    padding-right: 3px;
+    cursor: default;
+    position: relative;
+    top: 5px;
+}
+#context-menu li:hover {
+    background: #222222;
+}
+#context-menu li a {
+    text-decoration:none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    color:#f0f0f0;
+}
+#context-menu li a:hover {
+    color:#af0000;
+}
+#context-menu li a span.ui-icon-carat-1-e {
+    float:right;
+    position:static;
+    margin-top:2px;
+    width:16px;
+    height:16px;  background:url(http://download.jqueryui.com/themeroller/images/ui-icons_ffffff_256x240.png) no-repeat -64px -16px;
+}
+#context-menu li ul {
+    display:block;
+    position:absolute;
+    padding:5px 0px;
+    background: #333333;
     width: auto;
 }
-.ui-menu .ui-menu-item {
-    display: inline-block;
-    float: left;
-    margin: 0;
-    padding: 0;
-    padding-left: 10px;
-    width: auto;
-    height: 25px;
+#context-menu li ul li {
+    float:none;
+    width:auto;
+    margin-right: 4px;
 }
-ul .ui-front {
-    background-color: black;
+#context-menu li ul li:hover {
+    background: #222222;
+}
+#context-menu li ul li a {
+    font-size:0.9em;
 }

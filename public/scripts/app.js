@@ -92,7 +92,12 @@ function serverRequest(fn) {
     }
 }
 
-$("#context-menu").menu();
+$("#context-menu").menu({
+    position: {
+        my:'left top',
+        at:'left bottom'
+    }
+});
 
 // create editor on page load
 var editor = ace.edit("editor");
