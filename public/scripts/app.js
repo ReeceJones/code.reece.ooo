@@ -66,7 +66,9 @@ function serverRequest(fn) {
                         let parent = tok.length == 1 ? "file-container" 
                                     : findHash(data.folders, confident);//data.folders[i-1].hash;
                         $("#" + parent).append("<div class=\"pad\" id=\"" + data.folders[i].hash +
-                                        "\"><div class=\"folder\" id=\"" + data.folders[i].hash + "\"><b id=\"" + data.folders[i].hash + "\">- " + tok[tok.length-1] + "</b></div></div>");
+                                        "\"><div class=\"folder\" id=\"" + data.folders[i].hash + 
+                                        "\"><b id=\"" + data.folders[i].hash + "\">- " + tok[tok.length-1] + "</b></div></div>");
+                        $("#" + data.folders[i].hash).droppable();
                     }
                 }
                 // after doing folders we can add files
@@ -78,6 +80,9 @@ function serverRequest(fn) {
                         $("#" + hash).append(
                             "<div class=\"file pad\" id=\"" + data.files[i].hash + "\">" + tok[tok.length-1] + "</div>" 
                         );
+                        $("#" + data.files[i].hash).draggable({
+                            axis: "y"
+                        });
                     }
                 }
             break;
@@ -91,13 +96,6 @@ function serverRequest(fn) {
         console.log("socket closed: " + event.code);
     }
 }
-
-$("#context-menu").menu({
-    position: {
-        my:'left top',
-        at:'left bottom'
-    }
-});
 
 // create editor on page load
 var editor = ace.edit("editor");
@@ -158,6 +156,15 @@ $(function() {
                 });
             break;
             }
+    });
+    $("#context-menu").menu({
+        position: {
+            my:'left top',
+            at:'left bottom'
+        }
+    });
+    $("#file-container").resizable({
+        handles: 'e, w'
     });
     
 });

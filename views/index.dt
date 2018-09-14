@@ -9,10 +9,9 @@ html(lang='en')
         script(src='https://code.jquery.com/jquery-3.3.1.min.js', integrity='sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=', crossorigin='anonymous')
         script(src='/scripts/ace/ace.js', type='text/javascript')
         script(src='/scripts/ace/ext-language_tools.js', type='text/javascript')
-        script(src='/scripts/tinysort.js', type='text/javascript')
         script(src='/scripts/jquery-ui.js', type='text/javascript')
         link(href='/styles/style.css', type='text/css', rel='stylesheet')
-        div(id='file-container')
+        div(id='file-container', class='ui-widget-content')
         ul(id='context-menu')
             li
                 div
@@ -48,13 +47,34 @@ html(lang='en')
                             |="Paste"
                 
             li
-                |="Search"
+                div
+                    |="Search"
+                ul
+                    li
+                        div
+                            |="Find"
+                    li
+                        div
+                            |="Replace"
             li
-                |="View"
+                div
+                    |="View"
             li
-                |="Settings"
+                div
+                    |="Settings"
             li
-                |="Run"
+                div
+                    |="Run"
+                ul
+                    li
+                        div
+                            |="Execute"
+                    li
+                        div
+                            |="Execution Options"
+                    li
+                        div
+                            |="Execute with Parameters"
         div(id='drop-down', style='display: none; position: absolute')
             a(id='option-option')
                 |="Option"
