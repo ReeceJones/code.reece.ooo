@@ -32,6 +32,7 @@ class HashMemory {
 
 var websocket;
 var hashMemory;
+var currentPath;
 
 function findHash(data, path) {
     for (let i = 0; i < data.length; i++) {
@@ -88,6 +89,7 @@ function serverRequest(fn) {
             break;
             case "fileop-read":
                 editor.setValue(json.data);
+                editor.setHighlightActiveLine(false);
             break;
         }
         websocket.close();
@@ -151,6 +153,7 @@ $(function() {
                     let j = new Object();
                     j.operation = "fileop-read";
                     j.file = hashMemory.toPath(e.target.id);
+                    currentPath = j.file;
                     let str = JSON.stringify(j);
                     websocket.send(str);
                 });
@@ -167,4 +170,18 @@ $(function() {
         handles: 'e, w'
     });
     
+});
+
+$(document).keydown(function(e) {
+    if (e.keyCode == 83 && e.ctrlKey) {
+        e.preventDefault();
+        serverRequest(function() {
+            let j = new Object();
+            j.operation = "fileop-write";
+            j.file = currentPath;
+            j.data = editor.getValue();
+            let str = JSON.stringify(j);
+            websocket.send(str);
+        });
+    }
 });

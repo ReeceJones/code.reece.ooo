@@ -56,3 +56,24 @@ public void writeFile(string filePath, string fileData)
 {
     std.file.write(filePath, fileData);
 }
+
+public bool moveFile(string targetPath, string targetFile)
+{
+    if (!targetFile.exists)
+        return false;
+    string newPath = targetPath ~ targetFile[targetFile.lastIndexOf("/")+1..$];
+    if (newPath.exists)
+        return false;
+    File* newFile = new File(newPath, "w");
+    File* target = new File(targetFile, "r");
+    foreach(buffer; target.byChunk(4096))
+    {
+        newFile.write(buffer);
+    }
+    newFile.close();
+    target.close();
+    // now remove the old file
+    //target.remove();
+    targetFile.remove();
+    return true;
+}

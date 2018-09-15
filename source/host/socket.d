@@ -20,20 +20,32 @@ public void handleIOCommunication(scope WebSocket socket)
 
         JSONValue response;
         response["operation"] = JSONValue(operation);
-        if (operation == "filelist-update")
+        switch (operation)
         {
-            string data = readDirectory(baseDirectory);
-            response["data"] = JSONValue(data);
+            default: break;
+            case "filelist-update":
+            {
+                string data = readDirectory(baseDirectory);
+                response["data"] = JSONValue(data);
 
-            writeln("filelist-update json data:\n", response.toPrettyString());
-        }
-        else if (operation == "fileop-read")
-        {
-            string fileData = readFile(baseDirectory ~ json["file"].str);
-            try {
-                response["data"] = JSONValue(fileData);
-            } catch(JSONException ex) {writeln("file read failed");}
-            writeln("fileop-read json data:\n", response.toPrettyString);
+                writeln("filelist-update json data:\n", response.toPrettyString());
+            }
+            break;
+            case "fileop-read":
+            {
+                string fileData = readFile(baseDirectory ~ json["file"].str);
+                try {
+                    response["data"] = JSONValue(fileData);
+                } catch(JSONException ex) {writeln("file read failed");}
+                writeln("fileop-read json data:\n", response.toPrettyString);
+            }
+            break;
+            case "fileop-write":
+            {
+                writeFile(baseDirectory ~ json["file"].str, json["data"].str);
+                response["data"] = JSONValue("success");
+            }
+            break;
         }
         socket.send(response.toString);
 
